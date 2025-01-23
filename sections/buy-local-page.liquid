@@ -1,0 +1,204 @@
+{{ 'section-buy-local-page.css' | asset_url | stylesheet_tag }}
+{{ 'mapbox-gl.css' | asset_url | stylesheet_tag }}
+{{ 'mapbox-gl.js' | asset_url | script_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="shop_locator page-width  section-{{ section.id }}-padding">
+  <div class="shop_locator__content half-width rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {{ page.content }}
+  </div>
+
+  <div class="shop_locator__map half-width">
+    <div id="map" style="height: 100%; width: 100%;"></div>
+    <div id="search-container" style="margin: 20px; display: flex; justify-content: center;">
+        <input 
+            id="search-input" 
+            type="text" 
+            placeholder="Enter store name, address, or ZIP code..." 
+            style="width: 300px; padding: 10px; font-size: 16px;">
+        <button id="search-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Search</button>
+        <button id="clear-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Clear</button>
+    </div>
+    </div>
+</div>
+
+
+
+
+<script>
+  if (typeof mapboxgl !== 'undefined') {
+      mapboxgl.accessToken = {{ settings.map_api | json }};
+      const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/outdoors-v12',
+          center: [-98.5795, 39.8283],
+          zoom: 4
+      });
+
+      const markers = []; // Array to store all markers
+
+      async function getCoordinates(address) {
+          const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
+          const response = await fetch(geocodeUrl);
+          const data = await response.json();
+          if (data.features && data.features.length > 0) {
+              return data.features[0].geometry.coordinates;
+          } else {
+              console.error('Geocoding failed for address:', address);
+              return null;
+          }
+      }
+
+      function createCustomMarker() {
+          const el = document.createElement('div');
+          el.className = 'custom-marker';
+          el.style.backgroundImage = 'url("https://cdn.shopify.com/s/files/1/0696/9691/3696/files/Marker_a332104d-fc3b-416c-9822-f808c4210bcc.svg?v=1737646071")';
+          el.style.backgroundSize = 'contain';
+          el.style.width = '27px';
+          el.style.height = '41px';
+          return el;
+      }
+
+      // Pulling Metaobject data and rendering markers
+      const metaobjectShops = {{ shop.metaobjects.shops.values | json }}
+      metaobjectShops.forEach((shop) => {
+          const storeName = shop.name;
+          const address = shop.address;
+          getCoordinates(address).then(coordinates => {
+              if (coordinates) {
+                  const customMarker = createCustomMarker();
+                  const marker = new mapboxgl.Marker({ element: customMarker })
+                      .setLngLat(coordinates)
+                      .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}`))
+                      .addTo(map);
+                  markers.push({ marker, storeName, address, coordinates });
+              }
+          }).catch(error => {
+              console.error('Error adding marker for store:', storeName, error);
+          });
+      });
+
+      function calculateDistance(coord1, coord2) {
+          const toRad = (angle) => (Math.PI / 180) * angle;
+
+          const lat1 = coord1[1];
+          const lon1 = coord1[0];
+          const lat2 = coord2[1];
+          const lon2 = coord2[0];
+
+          const R = 3963; // Radius of Earth in kilometers
+          const dLat = toRad(lat2 - lat1);
+          const dLon = toRad(lon2 - lon1);
+
+          const a =
+              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c;
+      }
+
+      async function filterMarkersWithinRadius(query, radius = 50) {
+          query = query.toLowerCase();
+
+          const queryCoordinates = await getCoordinates(query);
+
+          if (!queryCoordinates) {
+              console.error('Unable to find location for query:', query);
+              return;
+          }
+
+          markers.forEach(markerData => {
+              const { marker, coordinates } = markerData;
+              const distance = calculateDistance(queryCoordinates, coordinates);
+
+              if (distance <= radius) {
+                  marker.getElement().style.display = '';
+              } else {
+                  marker.getElement().style.display = 'none';
+              }
+          });
+
+          // Center the map around the query location
+          map.flyTo({ center: queryCoordinates, zoom: 10 });
+      }
+
+      function resetMarkers() {
+          markers.forEach(({ marker }) => {
+              marker.getElement().style.display = '';
+          });
+          document.getElementById('search-input').value = '';
+          map.flyTo({ center: [-98.5795, 39.8283], zoom: 5 });
+      }
+
+      document.getElementById('search-button').addEventListener('click', () => {
+          const query = document.getElementById('search-input').value;
+          filterMarkersWithinRadius(query, 50);
+      });
+
+      document.getElementById('search-input').addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+              const query = document.getElementById('search-input').value;
+              filterMarkersWithinRadius(query, 50);
+          }
+      });
+
+      document.getElementById('clear-button').addEventListener('click', resetMarkers);
+  } else {
+      console.error('Mapbox GL JS failed to load.');
+  }
+</script>
+
+
+{% schema %}
+{
+  "name": "Buy Local Page",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Buy Local Page"
+    }
+  ]
+}
+{% endschema %}
