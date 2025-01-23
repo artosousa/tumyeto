@@ -23,14 +23,14 @@
 
   <div class="shop_locator__map half-width">
     <div id="map" style="height: 100%; width: 100%;"></div>
-    <div id="search-container" style="margin: 20px; display: flex; justify-content: center;">
+    <div id="search-container" style="margin: 20px; display: flex; gap:1rem; justify-content: center;">
         <input 
             id="search-input" 
             type="text" 
             placeholder="Enter store name, address, or ZIP code..." 
             style="width: 300px; padding: 10px; font-size: 16px;">
-        <button id="search-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Search</button>
-        <button id="clear-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Clear</button>
+        <button id="search-button" class="button">Search</button>
+        <button id="clear-button" class="button button--secondary">Clear</button>
     </div>
     </div>
 </div>
@@ -43,7 +43,7 @@
       mapboxgl.accessToken = {{ settings.map_api | json }};
       const map = new mapboxgl.Map({
           container: 'map',
-          style: 'mapbox://styles/mapbox/outdoors-v12',
+          style: 'mapbox://styles/artosousa/cm68wap9c00v001s2g2boha34',
           center: [-98.5795, 39.8283],
           zoom: 4
       });
@@ -61,7 +61,6 @@
               return null;
           }
       }
-
       function createCustomMarker() {
           const el = document.createElement('div');
           el.className = 'custom-marker';
@@ -134,7 +133,7 @@
           });
 
           // Center the map around the query location
-          map.flyTo({ center: queryCoordinates, zoom: 10 });
+          map.flyTo({ center: queryCoordinates, zoom: 8 });
       }
 
       function resetMarkers() {
@@ -142,7 +141,7 @@
               marker.getElement().style.display = '';
           });
           document.getElementById('search-input').value = '';
-          map.flyTo({ center: [-98.5795, 39.8283], zoom: 5 });
+          map.flyTo({ center: [-98.5795, 39.8283], zoom: 4 });
       }
 
       document.getElementById('search-button').addEventListener('click', () => {
