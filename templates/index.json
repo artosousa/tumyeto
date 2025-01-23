@@ -120,16 +120,15 @@
         "padding_bottom": 64
       }
     },
-    "instagram_feed_dTTnCX": {
-      "type": "instagram-feed",
-      "settings": {
-        "username": "artosousa"
-      }
-    },
-    "1737589421d7650e9a": {
+    "17297885750490b1d2": {
       "type": "apps",
       "blocks": {
-        "instafeed_app_block_M4GQri": {
+        "socialwidget_base_widget_q7WaB6": {
+          "type": "shopify://apps/socialwidget-instafeed/blocks/base-widget/508b8d5b-b176-4dc6-a0ba-2b222db6eb79",
+          "disabled": true,
+          "settings": {}
+        },
+        "instafeed_app_block_CNmchT": {
           "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
           "settings": {
             "title": "",
@@ -142,16 +141,17 @@
         }
       },
       "block_order": [
-        "instafeed_app_block_M4GQri"
+        "socialwidget_base_widget_q7WaB6",
+        "instafeed_app_block_CNmchT"
       ],
       "settings": {
         "include_margins": false
       }
     },
-    "1737605131b35284e4": {
+    "173760731403781e89": {
       "type": "apps",
       "blocks": {
-        "instafeed_app_block_DU773t": {
+        "instafeed_app_block_HWh9U3": {
           "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
           "settings": {
             "title": "",
@@ -164,16 +164,16 @@
         }
       },
       "block_order": [
-        "instafeed_app_block_DU773t"
+        "instafeed_app_block_HWh9U3"
       ],
       "settings": {
         "include_margins": false
       }
     },
-    "1737605216ed94c1d6": {
+    "1737607321bb0f3c4a": {
       "type": "apps",
       "blocks": {
-        "instafeed_app_block_x9fiei": {
+        "instafeed_app_block_FqiCaa": {
           "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
           "settings": {
             "title": "",
@@ -186,11 +186,35 @@
         }
       },
       "block_order": [
-        "instafeed_app_block_x9fiei"
+        "instafeed_app_block_FqiCaa"
       ],
       "settings": {
         "include_margins": false
       }
+    },
+    "shop_locator_Nha9yx": {
+      "type": "shop-locator",
+      "blocks": {
+        "store_JdjbFX": {
+          "type": "store",
+          "settings": {
+            "store_name": "Arthur Sousa Garage",
+            "address": "23 Naomi Crt, Hamilton, Ontario L9G5E4"
+          }
+        },
+        "store_PQhrnF": {
+          "type": "store",
+          "settings": {
+            "store_name": "Slappy Shop",
+            "address": "1600 Pennsylvania Ave NW, Washington, DC 20500"
+          }
+        }
+      },
+      "block_order": [
+        "store_JdjbFX",
+        "store_PQhrnF"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -199,9 +223,9 @@
     "featured_collection_wyCbGQ",
     "image_split_MXnnwY",
     "newsletter_e479Rc",
-    "instagram_feed_dTTnCX",
-    "1737589421d7650e9a",
-    "1737605131b35284e4",
-    "1737605216ed94c1d6"
+    "17297885750490b1d2",
+    "173760731403781e89",
+    "1737607321bb0f3c4a",
+    "shop_locator_Nha9yx"
   ]
 }
