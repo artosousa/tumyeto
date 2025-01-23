@@ -1,12 +1,13 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js" ></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js"></script>
+
 <div class="shop_locator__wrapper">
   <div id="map" style="height: 80vh; width: 100%;"></div>
   <div id="search-container" style="margin: 20px; display: flex; justify-content: center;">
       <input 
           id="search-input" 
           type="text" 
-          placeholder="Enter store name or address..." 
+          placeholder="Enter store name, address, or ZIP code..." 
           style="width: 300px; padding: 10px; font-size: 16px;">
       <button id="search-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Search</button>
       <button id="clear-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Clear</button>
@@ -14,103 +15,135 @@
 </div>
 
 <script>
-    if (typeof mapboxgl !== 'undefined') {
-        mapboxgl.accessToken = {{ settings.map_api | json }};
-        const map = new mapboxgl.Map({
-            container: 'map', // container ID
-            style: 'mapbox://styles/mapbox/outdoors-v12',
-            center: [-98.5795, 39.8283], // starting position [lng, lat]
-            zoom: 5, // starting zoom,
-            scrollZoom: false
-        });
+  if (typeof mapboxgl !== 'undefined') {
+      mapboxgl.accessToken = {{ settings.map_api | json }};
+      const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/outdoors-v12',
+          center: [-98.5795, 39.8283],
+          zoom: 5,
+          scrollZoom: false
+      });
 
-        const markers = []; // Array to store all markers
+      const markers = []; // Array to store all markers
 
-        // Function to get coordinates using the Mapbox Geocoding API
-        async function getCoordinates(address) {
-            const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
-            const response = await fetch(geocodeUrl);
-            const data = await response.json();
-            if (data.features && data.features.length > 0) {
-                return data.features[0].geometry.coordinates; // Returns [lng, lat]
-            } else {
-                console.error('Geocoding failed for address:', address);
-                return null;
-            }
-        }
+      async function getCoordinates(address) {
+          const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
+          const response = await fetch(geocodeUrl);
+          const data = await response.json();
+          if (data.features && data.features.length > 0) {
+              return data.features[0].geometry.coordinates;
+          } else {
+              console.error('Geocoding failed for address:', address);
+              return null;
+          }
+      }
 
-        // Function to filter map based on search query
-        function filterMarkers(query) {
-            query = query.toLowerCase();
-            markers.forEach(markerData => {
-                const { marker, storeName, address } = markerData;
-                if (
-                    storeName.toLowerCase().includes(query) ||
-                    address.toLowerCase().includes(query)
-                ) {
-                    marker.getElement().style.display = ''; // Show marker
-                } else {
-                    marker.getElement().style.display = 'none'; // Hide marker
-                }
-            });
-        }
+      function createCustomMarker() {
+          const el = document.createElement('div');
+          el.className = 'custom-marker';
+          el.style.backgroundImage = 'url("https://cdn.shopify.com/s/files/1/0696/9691/3696/files/Marker_a332104d-fc3b-416c-9822-f808c4210bcc.svg?v=1737646071")';
+          el.style.backgroundSize = 'contain';
+          el.style.width = '27px';
+          el.style.height = '41px';
+          return el;
+      }
 
-        // Function to reset all markers (clear filter)
-        function resetMarkers() {
-            markers.forEach(markerData => {
-                markerData.marker.getElement().style.display = ''; // Show all markers
-            });
-            document.getElementById('search-input').value = ''; // Clear search input
-        }
+      {% for block in section.blocks %}
+          (function() {
+              const storeName = {{ block.settings.store_name | json }};
+              const address = {{ block.settings.address | json }};
 
-        // Add search event listener
-        document.getElementById('search-button').addEventListener('click', () => {
-            const query = document.getElementById('search-input').value;
-            filterMarkers(query);
-        });
+              getCoordinates(address).then(coordinates => {
+                  if (coordinates) {
+                      const customMarker = createCustomMarker();
+                      const marker = new mapboxgl.Marker({ element: customMarker })
+                          .setLngLat(coordinates)
+                          .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}`))
+                          .addTo(map);
+                      markers.push({ marker, storeName, address, coordinates });
+                  }
+              }).catch(error => {
+                  console.error('Error adding marker for store:', storeName, error);
+              });
+          })();
+      {% endfor %}
 
-        // Add event listener for "Enter" key on the search input field
-        document.getElementById('search-input').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const query = document.getElementById('search-input').value;
-                filterMarkers(query);
-            }
-        });
-        
-        // Add clear/reset event listener
-        document.getElementById('clear-button').addEventListener('click', resetMarkers);
+      function calculateDistance(coord1, coord2) {
+          const toRad = (angle) => (Math.PI / 180) * angle;
 
-        // Iterate through each block and add a marker for each store
-        {% for block in section.blocks %}
-            (function() {
-                const storeName = {{ block.settings.store_name | json }};
-                const address = {{ block.settings.address | json }};
+          const lat1 = coord1[1];
+          const lon1 = coord1[0];
+          const lat2 = coord2[1];
+          const lon2 = coord2[0];
 
-                // Get coordinates for the store address
-                getCoordinates(address).then(coordinates => {
-                    if (coordinates) {
-                        // Create a marker for the store
-                        const marker = new mapboxgl.Marker()
-                            .setLngLat(coordinates)
-                            .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}`)) // Optional popup with store info
-                            .addTo(map);
+          const R = 6371; // Radius of Earth in kilometers
+          const dLat = toRad(lat2 - lat1);
+          const dLon = toRad(lon2 - lon1);
 
-                        // Store marker data for filtering
-                        markers.push({ marker, storeName, address });
-                    }
-                }).catch(error => {
-                    console.error('Error adding marker for store:', storeName, error);
-                });
-            })();
-        {% endfor %}
-    } else {
-        console.error('Mapbox GL JS failed to load.');
-    }
+          const a =
+              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c;
+      }
+
+      async function filterMarkersWithinRadius(query, radius = 50) {
+          query = query.toLowerCase();
+
+          const queryCoordinates = await getCoordinates(query);
+
+          if (!queryCoordinates) {
+              console.error('Unable to find location for query:', query);
+              return;
+          }
+
+          markers.forEach(markerData => {
+              const { marker, coordinates } = markerData;
+              const distance = calculateDistance(queryCoordinates, coordinates);
+
+              if (distance <= radius) {
+                  marker.getElement().style.display = '';
+              } else {
+                  marker.getElement().style.display = 'none';
+              }
+          });
+
+          // Center the map around the query location
+          map.flyTo({ center: queryCoordinates, zoom: 10 });
+      }
+
+      function resetMarkers() {
+          markers.forEach(({ marker }) => {
+              marker.getElement().style.display = '';
+          });
+          document.getElementById('search-input').value = '';
+          map.flyTo({ center: [-98.5795, 39.8283], zoom: 5 });
+      }
+
+      document.getElementById('search-button').addEventListener('click', () => {
+          const query = document.getElementById('search-input').value;
+          filterMarkersWithinRadius(query, 50);
+      });
+
+      document.getElementById('search-input').addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+              const query = document.getElementById('search-input').value;
+              filterMarkersWithinRadius(query, 50);
+          }
+      });
+
+      document.getElementById('clear-button').addEventListener('click', resetMarkers);
+  } else {
+      console.error('Mapbox GL JS failed to load.');
+  }
 </script>
 
 {% style %}
-  .shop_locator__wrapper{
-    position:relative;
+  .shop_locator__wrapper {
+    position: relative;
   }
   #map {
     height: 80vh;
@@ -126,6 +159,12 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 10px;
+  }
+  .custom-marker {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 27px;
+    height: 41px;
   }
 {% endstyle %}
 
