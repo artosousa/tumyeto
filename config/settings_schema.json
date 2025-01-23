@@ -34,6 +34,16 @@
     ]
   },
   {
+    "name": "Store Locator API",
+    "settings": [
+      {
+        "type": "text",
+        "id": "map_api",
+        "label": "Store location api key"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.colors.name",
     "settings": [
       {
