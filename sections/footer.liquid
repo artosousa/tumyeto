@@ -82,6 +82,16 @@
                 {%- case block.type -%}
                   {%- when '@app' -%}
                     {% render block %}
+                  {%- when 'brand_logos' -%}
+                    <div class="footer-block__brand-logos">
+                      {%- for brand in shop.metaobjects.brands.values -%}
+                        <div class="brand-logo">
+                          <a target="_blank" href="{{ brand.website }}" title="{{ brand.title }}" aria-label="{{ brand.title }}">
+                            <img src="{{ brand.logo | image_url }}" alt="{{ brand.title }} logo" width="103" height="103">
+                          </a>
+                        </div>
+                      {%- endfor -%}
+                    </div>
                   {%- when 'text' -%}
                     <div class="footer-block__details-content rte">
                       {{ block.settings.subtext }}
@@ -302,7 +312,6 @@
         <small class="copyright__content"
           >&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
         </small>
-        <small class="copyright__content">{{ powered_by_link }}</small>
         {%- if section.settings.show_policy -%}
           <ul class="policies list-unstyled">
             {%- for policy in shop.policies -%}
@@ -327,6 +336,22 @@
   "blocks": [
     {
       "type": "@app"
+    },
+    {
+      "type": "brand_logos",
+      "name": "Brand Logos",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Brand Logos"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "t:sections.footer.blocks.link_list.settings.heading.default",
+          "label": "t:sections.footer.blocks.link_list.settings.heading.label"
+        },
+      ] 
     },
     {
       "type": "link_list",
