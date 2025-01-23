@@ -1,0 +1,96 @@
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js"></script>
+<div id="map" style="height: 80vh; width: 100%;"></div>
+
+<script>
+    if (typeof mapboxgl !== 'undefined') {
+        mapboxgl.accessToken = {{ settings.map_api | json }};
+        const map = new mapboxgl.Map({
+            container: 'map', // container ID
+            style: 'mapbox://styles/mapbox/outdoors-v12',
+            center: [-98.5795, 39.8283], // starting position [lng, lat]. Note that lat must be set between -90 and 90
+            zoom: 5, // starting zoom,
+            scrollZoom: false
+        });
+
+        // Function to get coordinates using the Mapbox Geocoding API
+        async function getCoordinates(address) {
+            const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
+            const response = await fetch(geocodeUrl);
+            const data = await response.json();
+            if (data.features && data.features.length > 0) {
+                return data.features[0].geometry.coordinates; // Returns [lng, lat]
+            } else {
+                console.error('Geocoding failed for address:', address);
+                return null;
+            }
+        }
+
+        // Iterate through each block and add a marker for each store
+        {% for block in section.blocks %}
+            (function() {
+                const storeName = {{ block.settings.store_name | json }};
+                const address = {{ block.settings.address | json }};
+                console.log(storeName , '-', address)
+
+                // Get coordinates for the store address
+                getCoordinates(address).then(coordinates => {
+                    if (coordinates) {
+                        // Create a marker for the store
+                        const marker = new mapboxgl.Marker()
+                            .setLngLat(coordinates)
+                            .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}`)) // Optional popup with store info
+                            .addTo(map);
+                    }
+                }).catch(error => {
+                    console.error('Error adding marker for store:', storeName, error);
+                });
+            })();
+        {% endfor %}
+    } else {
+        console.error('Mapbox GL JS failed to load.');
+    }
+</script>
+
+{% style %}
+  #map {
+    height: 80vh;
+    width: 100%;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Store Locator Map",
+  "settings": [
+    {
+      "type": "text",
+      "id": "map_api",
+      "label": "Mapbox API Key"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Store",
+      "settings": [
+        {
+          "type": "text",
+          "id": "store_name",
+          "label": "Store Name"
+        },
+        {
+          "type": "text",
+          "id": "address",
+          "label": "Full Address"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store Locator Map"
+    }
+  ]
+}
+{% endschema %}
