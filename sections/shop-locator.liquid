@@ -1,6 +1,17 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js"></script>
-<div id="map" style="height: 80vh; width: 100%;"></div>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js" ></script>
+<div class="shop_locator__wrapper">
+  <div id="map" style="height: 80vh; width: 100%;"></div>
+  <div id="search-container" style="margin: 20px; display: flex; justify-content: center;">
+      <input 
+          id="search-input" 
+          type="text" 
+          placeholder="Enter store name or address..." 
+          style="width: 300px; padding: 10px; font-size: 16px;">
+      <button id="search-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Search</button>
+      <button id="clear-button" style="padding: 10px; margin-left: 10px; font-size: 16px;">Clear</button>
+  </div>
+</div>
 
 <script>
     if (typeof mapboxgl !== 'undefined') {
@@ -8,10 +19,12 @@
         const map = new mapboxgl.Map({
             container: 'map', // container ID
             style: 'mapbox://styles/mapbox/outdoors-v12',
-            center: [-98.5795, 39.8283], // starting position [lng, lat]. Note that lat must be set between -90 and 90
+            center: [-98.5795, 39.8283], // starting position [lng, lat]
             zoom: 5, // starting zoom,
             scrollZoom: false
         });
+
+        const markers = []; // Array to store all markers
 
         // Function to get coordinates using the Mapbox Geocoding API
         async function getCoordinates(address) {
@@ -26,12 +39,52 @@
             }
         }
 
+        // Function to filter map based on search query
+        function filterMarkers(query) {
+            query = query.toLowerCase();
+            markers.forEach(markerData => {
+                const { marker, storeName, address } = markerData;
+                if (
+                    storeName.toLowerCase().includes(query) ||
+                    address.toLowerCase().includes(query)
+                ) {
+                    marker.getElement().style.display = ''; // Show marker
+                } else {
+                    marker.getElement().style.display = 'none'; // Hide marker
+                }
+            });
+        }
+
+        // Function to reset all markers (clear filter)
+        function resetMarkers() {
+            markers.forEach(markerData => {
+                markerData.marker.getElement().style.display = ''; // Show all markers
+            });
+            document.getElementById('search-input').value = ''; // Clear search input
+        }
+
+        // Add search event listener
+        document.getElementById('search-button').addEventListener('click', () => {
+            const query = document.getElementById('search-input').value;
+            filterMarkers(query);
+        });
+
+        // Add event listener for "Enter" key on the search input field
+        document.getElementById('search-input').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const query = document.getElementById('search-input').value;
+                filterMarkers(query);
+            }
+        });
+        
+        // Add clear/reset event listener
+        document.getElementById('clear-button').addEventListener('click', resetMarkers);
+
         // Iterate through each block and add a marker for each store
         {% for block in section.blocks %}
             (function() {
                 const storeName = {{ block.settings.store_name | json }};
                 const address = {{ block.settings.address | json }};
-                console.log(storeName , '-', address)
 
                 // Get coordinates for the store address
                 getCoordinates(address).then(coordinates => {
@@ -41,6 +94,9 @@
                             .setLngLat(coordinates)
                             .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}`)) // Optional popup with store info
                             .addTo(map);
+
+                        // Store marker data for filtering
+                        markers.push({ marker, storeName, address });
                     }
                 }).catch(error => {
                     console.error('Error adding marker for store:', storeName, error);
@@ -53,9 +109,23 @@
 </script>
 
 {% style %}
+  .shop_locator__wrapper{
+    position:relative;
+  }
   #map {
     height: 80vh;
     width: 100%;
+  }
+  #search-container {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
   }
 {% endstyle %}
 
