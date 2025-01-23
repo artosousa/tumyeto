@@ -39,7 +39,8 @@
       {
         "type": "text",
         "id": "map_api",
-        "label": "Store location api key"
+        "label": "Store location api key",
+        "default": "pk.eyJ1IjoiYXJ0b3NvdXNhIiwiYSI6ImNtNjh1NTUwZTBiNnAydW9jdjAxbHIydjcifQ.Fb5TaMg184yJ0pJO5KDICA"
       }
     ]
   },
