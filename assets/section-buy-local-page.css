@@ -35,6 +35,27 @@
     z-index: 1;
     border-radius: 4px;
     padding: 10px;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100% !important;
+    max-width: 800px;
+    ;
+}
+
+@media screen and (min-width:749px) {
+    #search-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+}
+
+#search-input {
+    grid-column: 1 / span 2;
+    width: 100%;
+    max-width: 600px;
 }
 
 .custom-marker {
