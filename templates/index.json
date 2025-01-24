@@ -93,14 +93,14 @@
         "heading_PWaHYG": {
           "type": "heading",
           "settings": {
-            "heading": "Subscribe to our emails",
+            "heading": "<strong>Be the First to Know</strong>",
             "heading_size": "h1"
           }
         },
         "paragraph_qqrKVj": {
           "type": "paragraph",
           "settings": {
-            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+            "text": "<p>Get all the latest information on Events,<br/>Sales and Offers. Sign up for newsletter today.</p>"
           }
         },
         "email_form_Rg7JKA": {
@@ -120,100 +120,8 @@
         "padding_bottom": 64
       }
     },
-    "17297885750490b1d2": {
-      "type": "apps",
-      "blocks": {
-        "socialwidget_base_widget_q7WaB6": {
-          "type": "shopify://apps/socialwidget-instafeed/blocks/base-widget/508b8d5b-b176-4dc6-a0ba-2b222db6eb79",
-          "disabled": true,
-          "settings": {}
-        },
-        "instafeed_app_block_CNmchT": {
-          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
-          "settings": {
-            "title": "",
-            "title_color": "",
-            "alignment": "center",
-            "background_color": "",
-            "feed_id": "",
-            "html_area": ""
-          }
-        }
-      },
-      "block_order": [
-        "socialwidget_base_widget_q7WaB6",
-        "instafeed_app_block_CNmchT"
-      ],
-      "settings": {
-        "include_margins": false
-      }
-    },
-    "173760731403781e89": {
-      "type": "apps",
-      "blocks": {
-        "instafeed_app_block_HWh9U3": {
-          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
-          "settings": {
-            "title": "",
-            "title_color": "",
-            "alignment": "center",
-            "background_color": "",
-            "feed_id": "36739",
-            "html_area": ""
-          }
-        }
-      },
-      "block_order": [
-        "instafeed_app_block_HWh9U3"
-      ],
-      "settings": {
-        "include_margins": false
-      }
-    },
-    "1737607321bb0f3c4a": {
-      "type": "apps",
-      "blocks": {
-        "instafeed_app_block_FqiCaa": {
-          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
-          "settings": {
-            "title": "",
-            "title_color": "",
-            "alignment": "center",
-            "background_color": "",
-            "feed_id": "36741",
-            "html_area": ""
-          }
-        }
-      },
-      "block_order": [
-        "instafeed_app_block_FqiCaa"
-      ],
-      "settings": {
-        "include_margins": false
-      }
-    },
-    "shop_locator_Nha9yx": {
-      "type": "shop-locator",
-      "blocks": {
-        "store_JdjbFX": {
-          "type": "store",
-          "settings": {
-            "store_name": "Arthur Sousa Garage",
-            "address": "23 Naomi Crt, Hamilton, Ontario L9G5E4"
-          }
-        },
-        "store_PQhrnF": {
-          "type": "store",
-          "settings": {
-            "store_name": "Slappy Shop",
-            "address": "1600 Pennsylvania Ave NW, Washington, DC 20500"
-          }
-        }
-      },
-      "block_order": [
-        "store_JdjbFX",
-        "store_PQhrnF"
-      ],
+    "instagram_feed_fpiEJb": {
+      "type": "instagram-feed",
       "settings": {}
     }
   },
@@ -223,9 +131,6 @@
     "featured_collection_wyCbGQ",
     "image_split_MXnnwY",
     "newsletter_e479Rc",
-    "17297885750490b1d2",
-    "173760731403781e89",
-    "1737607321bb0f3c4a",
-    "shop_locator_Nha9yx"
+    "instagram_feed_fpiEJb"
   ]
 }

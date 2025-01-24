@@ -1,25 +1,27 @@
+<div class="instagram-feed" >
+  <div class="instagram-feed__col">
+    <div id="insta-feed"></div>
+  </div>
+  <div class="instagram-feed__col">
+    <div id="feed-36741" class="instafeed-shopify"></div>
+  </div>
+  <div class="instagram-feed__col ">
+    <div id="feed-36739" class="instafeed-shopify"></div>
+  </div>
+</div>
+{% style %}
+  .instagram-feed__col{
+    width: 33.33%;
+    float: left;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+{% endstyle %}
 
-{% javascript %}
-    // Function to fetch Instagram posts for a given username
-    async function fetchInstagramPosts(username, count = 12) {
-        const endpoint = `https://www.instagram.com/artosousa/?__a=1`; // Liquid variable injected
-        console.log(endpoint)
-        
-    }
-    fetchInstagramPosts()
-   
-{% endjavascript %}
 {% schema %}
 {
   "name": "Instagram Feed",
-  "settings": [
-    {
-        "type": "text",
-        "id": "username",
-        "label": "Instagram Username",
-        "default": "artosousa" // Optional default username
-    }
-  ],
+  "class": "section",
   "presets": [
     {
       "name": "Instagram Feed"
