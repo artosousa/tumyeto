@@ -53,19 +53,25 @@
 
           // Match the shop by name or address
           const shop = metaobjectShops.find((shop) =>
-              shop.name.toLowerCase().includes(query) || 
-              shop.address.toLowerCase().includes(query)
+              shop.account_name.toLowerCase().includes(query) || 
+              shop.street_address.toLowerCase().includes(query) ||
+              shop.city.toLowerCase().includes(query) ||
+              shop.state.toLowerCase().includes(query) ||
+              shop.zip_code.toLowerCase().includes(query) ||
+              shop.phone_number.toLowerCase().includes(query)
           );
 
           if (shop) {
               // If a shop is found, geocode its address
-              const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(shop.address)}.json?access_token=${mapboxgl.accessToken}`;
+              const fullAddress = `${shop.street_address}, ${shop.city}, ${shop.state}, ${shop.zip_code}`;
+              const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(fullAddress)}.json?access_token=${mapboxgl.accessToken}`;
+
               const response = await fetch(geocodeUrl);
               const data = await response.json();
               if (data.features && data.features.length > 0) {
                   return data.features[0].geometry.coordinates;
               } else {
-                  console.error('Geocoding failed for address:', shop.address);
+                  console.error('Geocoding failed for address:', shop.street_address);
                   return null;
               }
           } else {
@@ -94,16 +100,20 @@
 
       // Render markers for all shops
       metaobjectShops.forEach((shop) => {
-          const storeName = shop.name;
-          const address = shop.address;
+          const storeName = shop.account_name;
+          const address = shop.street_address;
+          const zipCode = shop.zip_code
+          const city = shop.city
+          const state = shop.state
+          const phoneNumber = shop.phone_number
           getCoordinates(address).then((coordinates) => {
               if (coordinates) {
                   const customMarker = createCustomMarker();
                   const marker = new mapboxgl.Marker({ element: customMarker })
                       .setLngLat(coordinates)
-                      .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}`))
+                      .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}<br>${city}, ${state} <br> ${zipCode}<br>${phoneNumber}`))
                       .addTo(map);
-                  markers.push({ marker, storeName, address, coordinates });
+                  markers.push({ marker, storeName, address,zipCode,city,state,phoneNumber,coordinates });
               }
           }).catch((error) => {
               console.error('Error adding marker for store:', storeName, error);
