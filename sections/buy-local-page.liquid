@@ -35,162 +35,187 @@
   </div>
 </div>
 
+<script class="js-shop-list" type="application/json">
+    {
+        "shops": [
+            {% paginate shop.metaobjects.shops.values by 250 %}
+                {% assign allShops = shop.metaobjects.shops.values %}
+                {% for shop in allShops %}                    
+                    {
+                        "id": {{ forloop.index0 | json }},
+                        "account_name": {{ shop.account_name | json }},
+                        "street_address": {{ shop.street_address | json }},
+                        "city": {{ shop.city | json }},
+                        "state": {{ shop.state | json }},
+                        "zip_code": {{ shop.zip_code | json }},
+                        "phone_number": {{ shop.phone_number | json }}
+                    }
+                    {% unless forloop.last %},{% endunless %}
+                {% endfor %}
+            {% endpaginate %}
+        ]
+    }
+</script>
+
 <script>
-  if (typeof mapboxgl !== 'undefined') {
-      mapboxgl.accessToken = {{ settings.map_api | json }};
-      const map = new mapboxgl.Map({
-          container: 'map',
-          style: 'mapbox://styles/artosousa/cm68wap9c00v001s2g2boha34',
-          center: [-98.5795, 39.8283],
-          zoom: 4
-      });
+    const rawData = document.querySelector('.js-shop-list')
+    const shopData = JSON.parse(rawData.innerText)
 
-      const markers = [];
-      const metaobjectShops = {{ shop.metaobjects.shops.values | json }};
+    if (typeof mapboxgl !== 'undefined') {
+        mapboxgl.accessToken = {{ settings.map_api | json }};
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/artosousa/cm68wap9c00v001s2g2boha34',
+            center: [-98.5795, 39.8283],
+            zoom: 4
+        });
+        
+        const markers = [];
+        const metaobjectShops = shopData.shops;
 
-      async function getCoordinates(query) {
-          query = query.trim().toLowerCase();
+        async function getCoordinates(query) {
+            query = query.trim().toLowerCase();
 
-          // Match the shop by name or address
-          const shop = metaobjectShops.find((shop) =>
-              shop.account_name.toLowerCase().includes(query) || 
-              shop.street_address.toLowerCase().includes(query) ||
-              shop.city.toLowerCase().includes(query) ||
-              shop.state.toLowerCase().includes(query) ||
-              shop.zip_code.toLowerCase().includes(query) ||
-              shop.phone_number.toLowerCase().includes(query)
-          );
+            // Match the shop by name or address
+            const shop = metaobjectShops.find((shop) =>
+                shop.account_name.toLowerCase().includes(query) ||
+                shop.street_address.toLowerCase().includes(query) ||
+                shop.city.toLowerCase().includes(query) ||
+                shop.state.toLowerCase().includes(query) ||
+                shop.zip_code.toLowerCase().includes(query) ||
+                shop.phone_number.toLowerCase().includes(query)
+            );
 
-          if (shop) {
-              // If a shop is found, geocode its address
-              const fullAddress = `${shop.street_address}, ${shop.city}, ${shop.state}, ${shop.zip_code}`;
-              const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(fullAddress)}.json?access_token=${mapboxgl.accessToken}`;
+            if (shop) {
+                // If a shop is found, geocode its address
+                const fullAddress = `${shop.street_address}, ${shop.city}, ${shop.state}, ${shop.zip_code}`;
+                const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(fullAddress)}.json?access_token=${mapboxgl.accessToken}`;
 
-              const response = await fetch(geocodeUrl);
-              const data = await response.json();
-              if (data.features && data.features.length > 0) {
-                  return data.features[0].geometry.coordinates;
-              } else {
-                  console.error('Geocoding failed for address:', shop.street_address);
-                  return null;
-              }
-          } else {
-              // If no shop is found, attempt to geocode the query directly
-              const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}`;
-              const response = await fetch(geocodeUrl);
-              const data = await response.json();
-              if (data.features && data.features.length > 0) {
-                  return data.features[0].geometry.coordinates;
-              } else {
-                  console.error('Geocoding failed for query:', query);
-                  return null;
-              }
-          }
-      }
+                const response = await fetch(geocodeUrl);
+                const data = await response.json();
+                if (data.features && data.features.length > 0) {
+                    return data.features[0].geometry.coordinates;
+                } else {
+                    console.error('Geocoding failed for address:', shop.street_address);
+                    return null;
+                }
+            } else {
+                // If no shop is found, attempt to geocode the query directly
+                const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}`;
+                const response = await fetch(geocodeUrl);
+                const data = await response.json();
+                if (data.features && data.features.length > 0) {
+                    return data.features[0].geometry.coordinates;
+                } else {
+                    console.error('Geocoding failed for query:', query);
+                    return null;
+                }
+            }
+        }
 
-      function createCustomMarker() {
-          const el = document.createElement('div');
-          el.className = 'custom-marker';
-          el.style.backgroundImage = 'url("https://cdn.shopify.com/s/files/1/0696/9691/3696/files/Marker_a332104d-fc3b-416c-9822-f808c4210bcc.svg?v=1737646071")';
-          el.style.backgroundSize = 'contain';
-          el.style.width = '27px';
-          el.style.height = '41px';
-          return el;
-      }
+        function createCustomMarker() {
+            const el = document.createElement('div');
+            el.className = 'custom-marker';
+            el.style.backgroundImage = 'url("https://cdn.shopify.com/s/files/1/0696/9691/3696/files/Marker_a332104d-fc3b-416c-9822-f808c4210bcc.svg?v=1737646071")';
+            el.style.backgroundSize = 'contain';
+            el.style.width = '27px';
+            el.style.height = '41px';
+            return el;
+        }
 
-      // Render markers for all shops
-      metaobjectShops.forEach((shop) => {
-          const storeName = shop.account_name;
-          const address = shop.street_address;
-          const zipCode = shop.zip_code
-          const city = shop.city
-          const state = shop.state
-          const phoneNumber = shop.phone_number
-          getCoordinates(address).then((coordinates) => {
-              if (coordinates) {
-                  const customMarker = createCustomMarker();
-                  const marker = new mapboxgl.Marker({ element: customMarker })
-                      .setLngLat(coordinates)
-                      .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}<br>${city}, ${state} <br> ${zipCode}<br>${phoneNumber}`))
-                      .addTo(map);
-                  markers.push({ marker, storeName, address,zipCode,city,state,phoneNumber,coordinates });
-              }
-          }).catch((error) => {
-              console.error('Error adding marker for store:', storeName, error);
-          });
-      });
+        // Render markers for all shops
+        metaobjectShops.forEach((shop) => {
+            const storeName = shop.account_name;
+            const address = shop.street_address;
+            const zipCode = shop.zip_code
+            const city = shop.city
+            const state = shop.state
+            const phoneNumber = shop.phone_number
+            getCoordinates(address).then((coordinates) => {
+                if (coordinates) {
+                    const customMarker = createCustomMarker();
+                    const marker = new mapboxgl.Marker({ element: customMarker })
+                        .setLngLat(coordinates)
+                        .setPopup(new mapboxgl.Popup().setHTML(`<strong>${storeName}</strong><br>${address}<br>${city}, ${state} <br> ${zipCode}<br>${phoneNumber}`))
+                        .addTo(map);
+                    markers.push({ marker, storeName, address, zipCode, city, state, phoneNumber, coordinates });
+                }
+            }).catch((error) => {
+                console.error('Error adding marker for store:', storeName, error);
+            });
+        });
 
-      function calculateDistance(coord1, coord2) {
-          const toRad = (angle) => (Math.PI / 180) * angle;
+        function calculateDistance(coord1, coord2) {
+            const toRad = (angle) => (Math.PI / 180) * angle;
 
-          const lat1 = coord1[1];
-          const lon1 = coord1[0];
-          const lat2 = coord2[1];
-          const lon2 = coord2[0];
+            const lat1 = coord1[1];
+            const lon1 = coord1[0];
+            const lat2 = coord2[1];
+            const lon2 = coord2[0];
 
-          const R = 3963; // Radius of Earth in miles
-          const dLat = toRad(lat2 - lat1);
-          const dLon = toRad(lon2 - lon1);
+            const R = 3963; // Radius of Earth in miles
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
 
-          const a =
-              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          return R * c;
-      }
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
 
-      async function filterMarkersWithinRadius(query, radius = 50) {
-          const queryCoordinates = await getCoordinates(query);
+        async function filterMarkersWithinRadius(query, radius = 50) {
+            const queryCoordinates = await getCoordinates(query);
 
-          if (!queryCoordinates) {
-              alert('No results found. Please check your search.');
-              return;
-          }
+            if (!queryCoordinates) {
+                alert('No results found. Please check your search.');
+                return;
+            }
 
-          let found = false;
-          markers.forEach(({ marker, coordinates, storeName, address }) => {
-              const distance = calculateDistance(queryCoordinates, coordinates);
-              if (distance <= radius) {
-                  marker.getElement().style.display = '';
-                  found = true;
-              } else {
-                  marker.getElement().style.display = 'none';
-              }
-          });
+            let found = false;
+            markers.forEach(({ marker, coordinates }) => {
+                const distance = calculateDistance(queryCoordinates, coordinates);
+                if (distance <= radius) {
+                    marker.getElement().style.display = '';
+                    found = true;
+                } else {
+                    marker.getElement().style.display = 'none';
+                }
+            });
 
-          if (!found) {
-              alert('No shops found within the specified radius.');
-          } else {
-              map.flyTo({ center: queryCoordinates, zoom: 8 });
-          }
-      }
+            if (!found) {
+                alert('No shops found within the specified radius.');
+            } else {
+                map.flyTo({ center: queryCoordinates, zoom: 8 });
+            }
+        }
 
-      function resetMarkers() {
-          markers.forEach(({ marker }) => {
-              marker.getElement().style.display = '';
-          });
-          document.getElementById('search-input').value = '';
-          map.flyTo({ center: [-98.5795, 39.8283], zoom: 4 });
-      }
+        function resetMarkers() {
+            markers.forEach(({ marker }) => {
+                marker.getElement().style.display = '';
+            });
+            document.getElementById('search-input').value = '';
+            map.flyTo({ center: [-98.5795, 39.8283], zoom: 4 });
+        }
 
-      document.getElementById('search-button').addEventListener('click', () => {
-          const query = document.getElementById('search-input').value;
-          filterMarkersWithinRadius(query, 50);
-      });
+        document.getElementById('search-button').addEventListener('click', () => {
+            const query = document.getElementById('search-input').value;
+            filterMarkersWithinRadius(query, 50);
+        });
 
-      document.getElementById('search-input').addEventListener('keydown', (event) => {
-          if (event.key === 'Enter') {
-              const query = document.getElementById('search-input').value;
-              filterMarkersWithinRadius(query, 50);
-          }
-      });
+        document.getElementById('search-input').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const query = document.getElementById('search-input').value;
+                filterMarkersWithinRadius(query, 50);
+            }
+        });
 
-      document.getElementById('clear-button').addEventListener('click', resetMarkers);
-  } else {
-      console.error('Mapbox GL JS failed to load.');
-  }
+        document.getElementById('clear-button').addEventListener('click', resetMarkers);
+    } else {
+        console.error('Mapbox GL JS failed to load.');
+    }
 </script>
 
 {% schema %}
