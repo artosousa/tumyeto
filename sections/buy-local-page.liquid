@@ -38,9 +38,9 @@
 <script class="js-shop-list" type="application/json">
     {
         "shops": [
-            {% paginate shop.metaobjects.shops.values by 250 %}
-                {% assign allShops = shop.metaobjects.shops.values %}
-                {% for shop in allShops %}                    
+            {% paginate shop.metaobjects.shops.values by 500 %}
+                {% assign all_shops = shop.metaobjects.shops.values %}
+                {% for shop in all_shops %}                    
                     {
                         "id": {{ forloop.index0 | json }},
                         "account_name": {{ shop.account_name | json }},
