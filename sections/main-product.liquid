@@ -465,7 +465,20 @@
                 {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
               {%- when 'buy_buttons' -%}
                 {% if product.type == 'Deck' %}
-                    <style>.custom-checkbox:hover.custom-checkbox:after,.custom-checkbox:after{box-shadow:none}.custom-checkbox{align-items: center}</style>
+                    {% style %}
+                      .custom-checkbox {
+                        width: 100%
+                        max-width: 44rem;
+                        background: #999;
+                        padding: 1rem;
+                        text-transform:uppercase;
+                        font-size: 1.5rem;
+                      }
+                      .custom-checkbox:hover.custom-checkbox:after,
+                      .custom-checkbox:after{box-shadow:none}.custom-checkbox{
+                        align-items: center
+                      }
+                    {% endstyle %}
                     <div class="field custom-checkbox"> 
                         <input type="checkbox" name="properties[Add Grip + $5.00]"form="{{ 'product-form-' | append: section.id }}" value="Yes" id="add-grip-+-$5.00">
                         <label style="margin-left: 5px;margin-bottom: 0;" class="form__label" for="add-grip-+-$5.00">Add Grip + $5.00</label><br>
