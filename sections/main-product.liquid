@@ -496,7 +496,7 @@
                       }
                       
                       /* Describe slider's look and position. */
-                      .slider {
+                      .slider-toggle {
                           position: absolute;
                           cursor: pointer;
                           top: 0;
@@ -510,13 +510,13 @@
                       
                       /* Describe the white ball's location 
                             and appearance in the slider. */
-                      .slider:before {
+                      .slider-toggle:before {
                           position: absolute;
                           content: "";
-                          height: 19px;
-                          width: 19px;
+                          height: 20px;
+                          width: 20px;
                           left: 2px;
-                          bottom: 3px;
+                          bottom: 2px;
                           background-color: white;
                           transition: .4s;
                           border-radius: 50%;
@@ -525,13 +525,13 @@
                       
                       /* Modify the slider's background color to 
                             green once the checkbox has been selected. */
-                      input:checked+.slider {
-                          background-color: green;
+                      input:checked+.slider-toggle  {
+                          background-color: #333;
                       }
                       
                       /* When the checkbox is checked, shift the 
                             white ball towards the right within the slider. */
-                      input:checked+.slider:before {
+                      input:checked+.slider-toggle:before {
                           transform: translateX(26px);
                       }
                     {% endstyle %}
@@ -542,7 +542,7 @@
                         <div class="box"></div>
                         <label class="form__label toggle" for="add-grip">
                           <input type="checkbox" name="properties[Add Grip + $5.00]"form="{{ 'product-form-' | append: section.id }}" value="Yes" id="add-grip">
-                          <span class="slider"></span>
+                          <span class="slider-toggle "></span>
                         </label>
                       </div>
                         
