@@ -8,6 +8,16 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Grip with Deck",
+    "settings": [
+      {
+        "type": "product",
+        "id": "add_grip",
+        "label": "Grip Sku"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.logo.name",
     "settings": [
       {
@@ -39,8 +49,7 @@
       {
         "type": "text",
         "id": "map_api",
-        "label": "Store location api key",
-        "default": "pk.eyJ1IjoiYXJ0b3NvdXNhIiwiYSI6ImNtNjh1NTUwZTBiNnAydW9jdjAxbHIydjcifQ.Fb5TaMg184yJ0pJO5KDICA"
+        "label": "Store location api key"
       }
     ]
   },

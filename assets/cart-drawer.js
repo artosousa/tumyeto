@@ -25,7 +25,115 @@ class CartDrawer extends HTMLElement {
     });
   }
 
+  async fetchCartContents() {
+    // Fetch the cart contents (this is a placeholder for your cart fetching method)
+    const cart = await fetch('/cart.js') // Adjust the API call as needed for your platform
+      .then(response => response.json())
+      .catch(error => console.error('Error fetching cart:', error));
+    
+    return cart.items; // Assuming 'items' is the array of products in the cart
+  }
+
+  async addGripToCart() {
+    const gripData = document.getElementById('js-cart-drawer-settings');
+    const gripSettings = JSON.parse(gripData.innerHTML);
+    let gripCount = 0;
+    let deckCount = 0;
+
+    const cartItems = await this.fetchCartContents();
+    const countedDecks = new Set();
+    cartItems.map((item) => {
+        
+
+        // Loop through each item properties
+        for (const key in item.properties) {
+            if (item.properties["Add Grip + $5.00"] === "Yes" || item.product_type === "Deck") {
+              deckCount += item.quantity;
+              countedDecks.add(item.id);
+            }
+        }
+
+        // Check if product.handle is 'grip-single-sheet'
+        if (item.handle === 'grip-single-sheet') {
+            gripCount += item.quantity; // Increment gripCount by the item's quantity
+        }
+    });
+
+    // If deckCount is greater than 0, add grip to the cart
+    if (deckCount !== gripCount ) {
+        this.addGripToCartItem(gripSettings.grip_id, deckCount - gripCount);
+    }
+
+
+  }
+  // Function to add the grip item to the cart
+  addGripToCartItem(gripId, quantity) {
+    
+    const gripItem = {
+          id: gripId,
+          quantity: quantity,
+      };
+
+      // Call the cart API or method to add this item to the cart
+      this.addToCart(gripItem); // Assuming this.addToCart is a function that handles adding an item to the cart
+  }
+  addToCart(item) {
+    const isLoading = document.querySelector('#isLoading')
+    isLoading.classList.remove('hidden')
+    
+
+    fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            items: [{
+                id: item.id,
+                quantity: item.quantity,
+            }],
+        }),
+    })
+    .then(response => response.json())
+    .then(() => {
+        return fetch('/cart.js'); // Fetch updated cart
+    })
+    .then(response => response.json())
+    .then(cart => {
+        
+
+        // Update cart icon bubble
+        const cartBubble = document.querySelector('#cart-icon-bubble');
+        const cartCountBubble = cartBubble.querySelector('.cart-count-bubble');
+        if (cartCountBubble) {
+            cartCountBubble.textContent = cart.item_count; // Update item count
+        }
+
+        // Update cart drawer contents
+        return fetch(`${routes.cart_url}?section_id=cart-drawer`);
+    })
+    .then(response => response.text())
+    .then(responseText => {
+        const html = new DOMParser().parseFromString(responseText, 'text/html');
+        const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+        for (const selector of selectors) {
+            const targetElement = document.querySelector(selector);
+            const sourceElement = html.querySelector(selector);
+            if (targetElement && sourceElement) {
+                targetElement.replaceWith(sourceElement);
+            }
+        }
+        isLoading.classList.add('hidden')
+    })
+    .catch(error => {
+        console.error('Error adding item to cart:', error);
+        
+    });
+  }
+
   open(triggeredBy) {
+    this.addGripToCart()
+    
     if (triggeredBy) this.setActiveElement(triggeredBy);
     const cartDrawerNote = this.querySelector('[id^="Details-"] summary');
     if (cartDrawerNote && !cartDrawerNote.hasAttribute('role')) this.setSummaryAccessibility(cartDrawerNote);
