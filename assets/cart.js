@@ -95,7 +95,6 @@ class CartItems extends HTMLElement {
   }
 
   async addGripToCart() {
-    console.log('add grip')
     const gripData = document.getElementById('js-cart-drawer-settings');
     const gripSettings = JSON.parse(gripData.innerHTML);
     let gripCount = 0;
@@ -251,8 +250,6 @@ class CartItems extends HTMLElement {
 
   async updateQuantity(line, quantity, name, variantId) {
     this.enableLoading(line);
-    
-    console.log('updating')
     
     const body = JSON.stringify({
       line,
