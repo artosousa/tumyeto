@@ -31,7 +31,28 @@
 {%- endunless -%}
 
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
-
+{% style %}
+  #isLoading{
+    display:flex;
+    position: absolute;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background: rgba( 255,255,255, 0.9);
+    height: 100%;
+    top:0;
+    left: 0;
+    z-index:22;
+  }
+  #isLoading .loading__spinner{
+    display: flex !important;
+    position: relative;
+  }
+{% endstyle %}
+<div id="isLoading" class="hidden">
+  <h3>Updating Griptape ...</h3>
+  {%- render 'loading-spinner' -%}
+</div>
 <cart-items class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
   <div class="page-width">
     <div class="title-wrapper-with-link">

@@ -90,7 +90,7 @@
         }
       {% endstyle %}
       <div id="isLoading" class="hidden">
-        <h3>Adding Griptape ...</h3>
+        <h3>Updating Griptape ...</h3>
         {%- render 'loading-spinner' -%}
       </div>
       <div class="drawer__header">
@@ -312,7 +312,7 @@
                           headers="CartDrawer-ColumnQuantity"
                         >
                           
-                            <cart-remove-button
+                            {% comment %} <cart-remove-button
                               id="CartDrawer-Remove-{{ item.index | plus: 1 }}"
                               data-index="{{ item.index | plus: 1 }}"
                             >
@@ -327,10 +327,12 @@
                                 </span>
                                 Delete Item
                               </button>
-                            </cart-remove-button>
-                            {% comment %} <quantity-popover>
+                            </cart-remove-button> {% endcomment %}
+                            <quantity-popover>
                               <div class="cart-item__quantity-wrapper quantity-popover-wrapper">
                                 <div class="quantity-popover-container{% if has_qty_rules or has_vol_pricing %} quantity-popover-container--hover{% endif %}">
+                                  {% comment %} <span>Qty:</span>
+                                  <span>{{ item.quantity }}</span> {% endcomment %}
                                   <quantity-input class="quantity cart-quantity">
                                     <button class="quantity__button" name="minus" type="button">
                                       <span class="visually-hidden">
@@ -389,6 +391,7 @@
                                   >
                                     <span class="svg-wrapper">
                                       {{- 'icon-remove.svg' | inline_asset_content -}}
+                                      
                                     </span>
                                   </button>
                                 </cart-remove-button>
@@ -488,7 +491,7 @@
                                   {{- 'icon-error.svg' | inline_asset_content -}}
                                 </span>
                               </div>
-                            </quantity-popover> {% endcomment %}
+                            </quantity-popover> 
                           
                         </td>
                       </tr>
