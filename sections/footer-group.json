@@ -25,14 +25,14 @@
         "footer-0": {
           "type": "link_list",
           "settings": {
-            "heading": "More Info",
+            "heading": "",
             "menu": "footer"
           }
         },
         "text_pK8V3M": {
           "type": "text",
           "settings": {
-            "heading": "Contact Information",
+            "heading": "",
             "subtext": "<p>📍<strong>Address:<br/></strong>2096 Newton Ave. San Diego, CA 92113<br/><strong>📞 Phone: <br/></strong>(619)232-7523<br/><strong>✉️ Email: <br/></strong><a href=\"mailto:contact@tumyeto.com\" title=\"mailto:contact@tumyeto.com\">Online Customer Support<br/></a><a href=\"mailto:b2b-inquiry@tumyeto.net\" title=\"mailto:b2b-inquiry@tumyeto.net\">New Shop or Distributor</a></p>"
           }
         },
