@@ -467,12 +467,15 @@
                 {% if product.type == 'Deck' %}
                     {% style %}
                       .custom-checkbox {
-                        width: 100%
+                        width: 100%;
                         max-width: 44rem;
-                        background: #999;
+                        background: #e9e9e9;
                         padding: 1rem;
                         text-transform:uppercase;
                         font-size: 1.5rem;
+                      }
+                      .custom-checkbox label{
+                        font-size:2rem;
                       }
                       .custom-checkbox:hover.custom-checkbox:after,
                       .custom-checkbox:after{box-shadow:none}.custom-checkbox{
