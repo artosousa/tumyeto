@@ -229,39 +229,6 @@
       ],
       "settings": {}
     },
-    "newsletter_e479Rc": {
-      "type": "newsletter",
-      "blocks": {
-        "heading_PWaHYG": {
-          "type": "heading",
-          "settings": {
-            "heading": "<strong>Be the First to Know</strong>",
-            "heading_size": "h1"
-          }
-        },
-        "paragraph_qqrKVj": {
-          "type": "paragraph",
-          "settings": {
-            "text": "<p>Get all the latest information on Events,<br/>Sales and Offers. Sign up for newsletter today.</p>"
-          }
-        },
-        "email_form_Rg7JKA": {
-          "type": "email_form",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "heading_PWaHYG",
-        "paragraph_qqrKVj",
-        "email_form_Rg7JKA"
-      ],
-      "settings": {
-        "color_scheme": "background-1",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 64
-      }
-    },
     "image_banner_Yj3LgF": {
       "type": "image-banner",
       "blocks": {
@@ -310,6 +277,40 @@
         "show_text_below": false
       }
     },
+    "newsletter_e479Rc": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_PWaHYG": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>Be the First to Know</strong>",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_qqrKVj": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Get all the latest information on Events,<br/>Sales and Offers. Sign up for newsletter today.</p>"
+          }
+        },
+        "email_form_Rg7JKA": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_PWaHYG",
+        "paragraph_qqrKVj",
+        "email_form_Rg7JKA"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    },
     "instagram_feed_fpiEJb": {
       "type": "instagram-feed",
       "settings": {}
@@ -325,8 +326,8 @@
     "featured_collection_apxMtw",
     "featured_collection_DFKAkQ",
     "image_split_MXnnwY",
-    "newsletter_e479Rc",
     "image_banner_Yj3LgF",
+    "newsletter_e479Rc",
     "instagram_feed_fpiEJb"
   ]
 }
