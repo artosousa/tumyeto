@@ -299,7 +299,7 @@
       "settings": {
         "image": "shopify://shop_images/BuyLocal.jpg",
         "image_overlay_opacity": 60,
-        "image_height": "large",
+        "image_height": "small",
         "desktop_content_position": "middle-left",
         "show_text_box": false,
         "desktop_content_alignment": "left",
