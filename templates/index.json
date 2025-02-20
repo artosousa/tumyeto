@@ -298,10 +298,10 @@
       ],
       "settings": {
         "image": "shopify://shop_images/BuyLocal.jpg",
-        "image_overlay_opacity": 40,
+        "image_overlay_opacity": 60,
         "image_height": "large",
         "desktop_content_position": "middle-left",
-        "show_text_box": true,
+        "show_text_box": false,
         "desktop_content_alignment": "left",
         "color_scheme": "accent-1",
         "image_behavior": "ambient",
