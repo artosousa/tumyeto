@@ -95,6 +95,7 @@
                   {{ block.shopify_attributes }}
                 >
                   {{- block.settings.text -}}
+                  {{- block.settings.page.content -}}
                 </p>
               {%- when 'title' -%}
                 <div class="product__title" {{ block.shopify_attributes }}>
@@ -765,6 +766,11 @@
           "id": "text",
           "default": "t:sections.main-product.blocks.text.settings.text.default",
           "label": "t:sections.main-product.blocks.text.settings.text.label"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "t:sections.main-product.blocks.collapsible_tab.settings.page.label"
         },
         {
           "type": "select",
