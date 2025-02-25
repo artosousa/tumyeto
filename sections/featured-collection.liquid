@@ -57,6 +57,107 @@
     assign show_desktop_slider = true
   endif
 -%}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+  const productsArray = {{ section.settings.collection.products | json }};
+  let arrayLength = {{ section.settings.collection.products | size }};
+  let randomIndexes = new Set();
+  let itemsToDisplay = Math.min({{ products_to_display }}, arrayLength);
+  const listContainer = document.getElementById('Slider-{{ section.id }}');
+  let productContent = '';
+
+  while (randomIndexes.size < itemsToDisplay) {
+    let randomIndex = Math.floor(Math.random() * arrayLength);
+
+    // Check if the index is already in the Set
+    if (!randomIndexes.has(randomIndex)) {
+      randomIndexes.add(randomIndex);
+      
+      // Grab the product that matches the randomIndex
+      let randomProduct = productsArray[randomIndex];
+
+      productContent += `
+        <li id="Slide-template--${randomProduct.id}__featured_collection_wyCbGQ-1" class="grid__item slider__slide scroll-trigger animate--slide-in" data-cascade="" style="--animation-order: 1;">
+            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-rating.css?v=179577762467860590411739291662" rel="stylesheet" type="text/css" media="all">
+            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-volume-pricing.css?v=111870094811454961941739291662" rel="stylesheet" type="text/css" media="all">
+
+            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-price.css?v=70172745017360139101739291659" rel="stylesheet" type="text/css" media="all">
+            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/quick-order-list.css?v=129932180309343703061739291670" rel="stylesheet" type="text/css" media="all">
+            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/quantity-popover.css?v=129068967981937647381739291671" rel="stylesheet" type="text/css" media="all">
+            <div class="card-wrapper product-card-wrapper underline-links-hover">
+              <div class="card card--standard card--media" style="--ratio-percent: 125.0%;">
+                <div class="card__inner color-background-2 gradient ratio" style="--ratio-percent: 125.0%;"><div class="card__media">
+                  <div class="media media--transparent media--hover-effect">
+                    <img src="${randomProduct.featured_image}" sizes="(min-width: 1600px) 367px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="&quot;O&quot; Tribute 10.00" class="motion-reduce" loading="lazy" width="750" height="750">
+                   </div>
+                  </div>
+                  <div class="card__content">
+                    <div class="card__information">
+                      <h3 class="card__heading">
+                        <a href="/products/${randomProduct.handle}/" id="StandardCardNoMediaLink-template--${randomProduct.id}__featured_collection_wyCbGQ-9682836324640" class="full-unstyled-link" aria-labelledby="StandardCardNoMediaLink-template--24301578518816__featured_collection_wyCbGQ-9682836324640 NoMediaStandardBadge-template--24301578518816__featured_collection_wyCbGQ-9682836324640">
+                            ${randomProduct.title}
+                        </a>
+                      </h3>
+                    </div>
+                    <div class="card__badge bottom left"></div>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <div class="card__information">
+                    <h3 class="card__heading h5" id="title-template--${randomProduct.id}__featured_collection_wyCbGQ-9682836324640">
+                      <a href="/products/${randomProduct.handle}/" id="CardLink-template--24301578518816__featured_collection_wyCbGQ-9682836324640" class="full-unstyled-link" aria-labelledby="CardLink-template--${randomProduct.id}__featured_collection_wyCbGQ-9682836324640 Badge-template--24301578518816__featured_collection_wyCbGQ-9682836324640">
+                        ${randomProduct.title}
+                      </a>
+                    </h3>
+                    <div class="card-information"><span class="caption-large light"></span>
+                    <div class="price ">
+                    <div class="price__container"><div class="price__regular">
+                      <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                      <span class="price-item price-item--regular">
+                        ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(randomProduct.price / 100)}
+                      </span>
+                    </div>
+                    <div class="price__sale">
+                      <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                      <span><s class="price-item price-item--regular"></s></span>
+                      <span class="visually-hidden visually-hidden--inline">Sale price</span>
+                      <span class="price-item price-item--sale price-item--last">
+                        ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(randomProduct.price / 100)}
+                      </span>
+                    </div>
+                    <small class="unit-price caption hidden">
+                      <span class="visually-hidden">Unit price</span>
+                      <span class="price-item price-item--last">
+                        <span></span>
+                        <span aria-hidden="true">/</span>
+                        <span class="visually-hidden">&nbsp;per&nbsp;</span>
+                        <span>
+                        </span>
+                      </span>
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card__badge bottom left"></div>
+          </div>
+        </div>
+      </div>
+      </li>
+      `;
+    }
+  }
+  
+  // Log the final product count
+  console.log({
+      itemsToDisplay,
+      randomIndexes
+  });
+  
+  listContainer.innerHTML = productContent;
+});
+
+</script>
 
 <div
   class="color-{{ section.settings.color_scheme }} isolate gradient"
@@ -94,57 +195,7 @@
         role="list"
         aria-label="{{ 'general.slider.name' | t }}"
       >
-        {% assign skip_card_product_styles = false %}
-        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
-          <li
-            id="Slide-{{ section.id }}-{{ forloop.index }}"
-            class="grid__item{% if show_mobile_slider or show_desktop_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-            {% if settings.animations_reveal_on_scroll %}
-              data-cascade
-              style="--animation-order: {{ forloop.index }};"
-            {% endif %}
-          >
-            {% render 'card-product',
-              card_product: product,
-              media_aspect_ratio: section.settings.image_ratio,
-              image_shape: section.settings.image_shape,
-              show_secondary_image: section.settings.show_secondary_image,
-              show_vendor: section.settings.show_vendor,
-              show_rating: section.settings.show_rating,
-              skip_styles: skip_card_product_styles,
-              section_id: section.id,
-              quick_add: section.settings.quick_add
-            %}
-          </li>
-          {%- assign skip_card_product_styles = true -%}
-        {%- else -%}
-          {%- for i in (1..section.settings.columns_desktop) -%}
-            <li
-              class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-              {% if settings.animations_reveal_on_scroll %}
-                data-cascade
-                style="--animation-order: {{ forloop.index }};"
-              {% endif %}
-            >
-              {% liquid
-                assign ridx = forloop.rindex
-                case ridx
-                  when 5
-                    assign ridx = 1
-                  when 6
-                    assign ridx = 2
-                endcase
-              %}
-              {%- assign placeholder_image = 'product-apparel-' | append: ridx -%}
-              {% render 'card-product',
-                show_vendor: section.settings.show_vendor,
-                media_aspect_ratio: section.settings.image_ratio,
-                image_shape: section.settings.image_shape,
-                placeholder_image: placeholder_image
-              %}
-            </li>
-          {%- endfor -%}
-        {%- endfor -%}
+        
       </ul>
       {%- if show_mobile_slider or show_desktop_slider -%}
         <div class="slider-buttons">
