@@ -1,3 +1,42 @@
+<script class="js-section-settings" type="application/json">
+    {
+        "section_settings": 
+            {
+              "section_id": "{{ section.id }}",
+              "title": "{{ section.settings.title }}",
+              "heading_size": "{{ section.settings.heading_size }}",
+              "description": "{{ section.settings.description }}",
+              "show_description": {{ section.settings.show_description }},
+              "description_style": "{{ section.settings.description_style }}",
+              "collection": "{{ section.settings.collection }}",
+              "products_to_show": {{ section.settings.products_to_show }},
+              "columns_desktop": {{ section.settings.columns_desktop }},
+              "full_width": {{ section.settings.full_width }},
+              "show_view_all": {{ section.settings.show_view_all }},
+              "view_all_style": "{{ section.settings.view_all_style }}",
+              "enable_desktop_slider": {{ section.settings.enable_desktop_slider }},
+              "color_scheme": "{{ section.settings.color_scheme }}",
+              "image_ratio": "{{ section.settings.image_ratio }}",
+              "image_shape": "{{ section.settings.image_shape }}",
+              "show_secondary_image": {{ section.settings.show_secondary_image }},
+              "show_vendor": {{ section.settings.show_vendor }},
+              "show_rating": {{ section.settings.show_rating }},
+              "quick_add": "{{ section.settings.quick_add }}",
+              "columns_mobile": {{ section.settings.columns_mobile }},
+              "swipe_on_mobile": {{ section.settings.swipe_on_mobile }},
+              "padding_top": {{ section.settings.padding_top }},
+              "passing_bottom": {{ section.settings.padding_bottom }},
+              "animations_reveal_on_scroll": {{ settings.animations_reveal_on_scroll }},
+              "card_style": "{{ settings.card_style }}",
+              "card_color_scheme": "{{ settings.card_color_scheme }}",
+              "page_width": {{ settings.page_width }},
+              "badge_position": "{{ settings.badge_position }}",
+              "sale_badge_color_scheme": "{{ settings.sale_badge_color_scheme }}",
+              "sold_out_badge_color_scheme": "{{ settings.sold_out_badge_color_scheme }}"
+            }
+        
+    }
+</script>
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
@@ -57,101 +96,139 @@
     assign show_desktop_slider = true
   endif
 -%}
+
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-  const productsArray = {{ section.settings.collection.products | json }};
-  let arrayLength = {{ section.settings.collection.products | size }};
-  let randomIndexes = new Set();
-  let itemsToDisplay = Math.min({{ products_to_display }}, arrayLength);
-  const listContainer = document.getElementById('Slider-{{ section.id }}');
-  let productContent = '';
+  document.addEventListener("DOMContentLoaded", function () {
+    const sectionId = "{{ section.id }}".replace("__", "-")
+    const rawData_sectionId = document.querySelector('.js-section-settings')
+    const settingsObj = JSON.parse(rawData_sectionId.innerText)
+    const settings = settingsObj.section_settings
+    const productsArray = {{ section.settings.collection.products | json }};
+    let arrayLength = {{ section.settings.collection.products | size }};
+    let randomIndexes = new Set();
+    let itemsToDisplay = Math.min({{ products_to_display }}, arrayLength);
+    const listContainer = document.getElementById('Slider-' + sectionId);
+    let productContent = '';
 
-  while (randomIndexes.size < itemsToDisplay) {
-    let randomIndex = Math.floor(Math.random() * arrayLength);
+    while (randomIndexes.size < itemsToDisplay) {
+      let randomIndex = Math.floor(Math.random() * arrayLength);
 
-    // Check if the index is already in the Set
-    if (!randomIndexes.has(randomIndex)) {
-      randomIndexes.add(randomIndex);
-      
-      // Grab the product that matches the randomIndex
-      let randomProduct = productsArray[randomIndex];
+      // Check if the index is already in the Set
+      if (!randomIndexes.has(randomIndex)) {
+        randomIndexes.add(randomIndex);
+        
+        // Grab the product that matches the randomIndex
+        let randomProduct = productsArray[randomIndex];
+        let ratio = 1;
+        if(settings.image_ratio === 'portrait'){
+          ratio = 0.8
+        } 
+        console.log(randomProduct)
+        productContent += `
+          <li 
+            id="Slide-${sectionId}-${randomIndex}"
+            class="grid__item ${settings.animations_reveal_on_scroll ? 'slider__slide' : ''} ${settings.animations_reveal_on_scroll ?  'scroll-trigger animate--slide-in' : '' }" 
+            ${settings.animations_reveal_on_scroll ? (
+              `data-cascade="" style="--animation-order: 1;"`
+            ): ''}
+          >
+             
+              <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-volume-pricing.css?v=111870094811454961941739291662" rel="stylesheet" type="text/css" media="all">
 
-      productContent += `
-        <li id="Slide-template--${randomProduct.id}__featured_collection_wyCbGQ-1" class="grid__item slider__slide scroll-trigger animate--slide-in" data-cascade="" style="--animation-order: 1;">
-            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-rating.css?v=179577762467860590411739291662" rel="stylesheet" type="text/css" media="all">
-            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-volume-pricing.css?v=111870094811454961941739291662" rel="stylesheet" type="text/css" media="all">
-
-            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-price.css?v=70172745017360139101739291659" rel="stylesheet" type="text/css" media="all">
-            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/quick-order-list.css?v=129932180309343703061739291670" rel="stylesheet" type="text/css" media="all">
-            <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/quantity-popover.css?v=129068967981937647381739291671" rel="stylesheet" type="text/css" media="all">
-            <div class="card-wrapper product-card-wrapper underline-links-hover">
-              <div class="card card--standard card--media" style="--ratio-percent: 125.0%;">
-                <div class="card__inner color-background-2 gradient ratio" style="--ratio-percent: 125.0%;"><div class="card__media">
-                  <div class="media media--transparent media--hover-effect">
-                    <img src="${randomProduct.featured_image}" sizes="(min-width: 1600px) 367px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="&quot;O&quot; Tribute 10.00" class="motion-reduce" loading="lazy" width="750" height="750">
-                   </div>
+              <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/component-price.css?v=70172745017360139101739291659" rel="stylesheet" type="text/css" media="all">
+              <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/quick-order-list.css?v=129932180309343703061739291670" rel="stylesheet" type="text/css" media="all">
+              <link href="//tum-yeto.myshopify.com/cdn/shop/t/12/assets/quantity-popover.css?v=129068967981937647381739291671" rel="stylesheet" type="text/css" media="all">
+              <div class="card-wrapper product-card-wrapper underline-links-hover">
+                <div class=" card card--${settings.card_style} ${settings.card_style === 'card'? `color-${settings.color_scheme} gradient` : ''} ${settings.image_shape != 'default' ? 'card--shape' : ''  } card--media" style="--ratio-percent: ${1 / ratio * 100}%">
+                  <div class="card__inner ${settings.card_style === 'standard' ? `ratio color${settings.card_color_scheme} gradient` : ''}  " style="--ratio-percent: ${1 / ratio * 100}%">
+                    <div class="card__media ${settings.image_shape != 'default' ? `shape--${settings.image_shape} color-${settings.card_color_scheme} gradient`: ''  }">
+                      <div class="media media--transparent media--hover-effect">
+                        <img src="${randomProduct.featured_image}" style="object-fit:contain;"  alt="${randomProduct.title}" class="motion-reduce" loading="lazy" width="${randomProduct.media[0].width}" height="${randomProduct.media[0].height}">
+                        ${settings.show_secondary_image && randomProduct.media[1] ? (
+                          `<img src="${randomProduct.randomProduct.media[1].src}" style="object-fit:contain;"  alt="${randomProduct.title}" class="motion-reduce" loading="lazy" width="${randomProduct.media[1].width}" height="${randomProduct.media[1].height}">`
+                        ): ''}
+                      </div>
+                    </div>
+                    <div class="card__content">
+                      <div class="card__information">
+                        <h3 class="card__heading">
+                          <a href="/products/${randomProduct.handle}/" id="StandardCardNoMediaLink-${settings.sectionId}--${randomProduct.id}" class="full-unstyled-link" aria-labelledby="StandardCardNoMediaLink-${settings.sectionId}-${randomProduct.id}  NoMediaStandardBadge-${settings.sectionId}-${randomProduct.id}">
+                              ${randomProduct.title}
+                          </a>
+                        </h3>
+                      </div>
+                      <div class="card__badge ${settings.badge_position}">
+                        ${!randomProduct 
+                          ? `
+                            <span
+                              id="NoMediaStandardBadge-${settings.sectionId}-${settings.sectionId}"
+                              class="badge badge--bottom-left color-${settings.sold_out_badge_color_scheme}"
+                            >
+                              {{- 'products.product.sold_out' | t -}}
+                            </span>
+                          `
+                          : (randomProduct.compare_at_price > randomProduct.price && randomProduct.available) 
+                          ? `
+                            <span 
+                              id="NoMediaStandardBadge-${settings.sectionId}-${randomProduct.id}" 
+                              class="badge badge--bottom-left color-${settings.sold_out_badge_color_scheme}">
+                              {{- 'products.product.on_sale' | t -}}
+                            </span>
+                          `
+                          : '' // Optional: Fallback empty string
+                        }
+                      </div>
+                    </div>
                   </div>
                   <div class="card__content">
                     <div class="card__information">
-                      <h3 class="card__heading">
-                        <a href="/products/${randomProduct.handle}/" id="StandardCardNoMediaLink-template--${randomProduct.id}__featured_collection_wyCbGQ-9682836324640" class="full-unstyled-link" aria-labelledby="StandardCardNoMediaLink-template--24301578518816__featured_collection_wyCbGQ-9682836324640 NoMediaStandardBadge-template--24301578518816__featured_collection_wyCbGQ-9682836324640">
-                            ${randomProduct.title}
+                      <h3 class="card__heading ${randomProduct.featured_image || settings.card_style === 'standard' ? 'h5' : ""}" 
+                      ${randomProduct.featured_media || settings.card_styles === 'card' ? `id="title-${sectionId}-${randomProduct.id}"` : ``}
+                      >
+                        <a href="/products/${randomProduct.handle}/" id="CardLink-${sectionId}-${randomProduct.id}" class="full-unstyled-link" aria-labelledby="CardLink-${sectionId}-${randomProduct.id} Badge-${sectionId}-${randomProduct.id}">
+                          ${randomProduct.title}
                         </a>
                       </h3>
-                    </div>
-                    <div class="card__badge bottom left"></div>
-                  </div>
-                </div>
-                <div class="card__content">
-                  <div class="card__information">
-                    <h3 class="card__heading h5" id="title-template--${randomProduct.id}__featured_collection_wyCbGQ-9682836324640">
-                      <a href="/products/${randomProduct.handle}/" id="CardLink-template--24301578518816__featured_collection_wyCbGQ-9682836324640" class="full-unstyled-link" aria-labelledby="CardLink-template--${randomProduct.id}__featured_collection_wyCbGQ-9682836324640 Badge-template--24301578518816__featured_collection_wyCbGQ-9682836324640">
-                        ${randomProduct.title}
-                      </a>
-                    </h3>
-                    <div class="card-information"><span class="caption-large light"></span>
-                    <div class="price ">
-                    <div class="price__container"><div class="price__regular">
-                      <span class="visually-hidden visually-hidden--inline">Regular price</span>
-                      <span class="price-item price-item--regular">
-                        ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(randomProduct.price / 100)}
-                      </span>
-                    </div>
-                    <div class="price__sale">
-                      <span class="visually-hidden visually-hidden--inline">Regular price</span>
-                      <span><s class="price-item price-item--regular"></s></span>
-                      <span class="visually-hidden visually-hidden--inline">Sale price</span>
-                      <span class="price-item price-item--sale price-item--last">
-                        ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(randomProduct.price / 100)}
-                      </span>
-                    </div>
-                    <small class="unit-price caption hidden">
-                      <span class="visually-hidden">Unit price</span>
-                      <span class="price-item price-item--last">
-                        <span></span>
-                        <span aria-hidden="true">/</span>
-                        <span class="visually-hidden">&nbsp;per&nbsp;</span>
-                        <span>
-                        </span>
-                      </span>
-                    </small>
+                      <div class="card-information">
+                        ${settings.show_vendor ? (
+                          `
+                            <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                            <div class="caption-with-letter-spacing light">${randomProduct.vendor}</div>
+                          `
+                        ): (``)}
+                      
+                      <div class="price ">
+                        <div class="price__container"><div class="price__regular">
+                          <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                          <span class="price-item price-item--regular">
+                            ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(randomProduct.price / 100)}
+                          </span>
+                        </div>
+                        <div class="price__sale">
+                          <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                          <span><s class="price-item price-item--regular"></s></span>
+                          <span class="visually-hidden visually-hidden--inline">Sale price</span>
+                          <span class="price-item price-item--sale price-item--last">
+                            ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(randomProduct.price / 100)}
+                          </span>
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>
+              <div class="card__badge bottom left"></div>
             </div>
-            <div class="card__badge bottom left"></div>
           </div>
         </div>
-      </div>
-      </li>
-      `;
+        </li>
+        `;
+      }
     }
-  }
+    
   
- 
-  
-  listContainer.innerHTML = productContent;
-});
+    
+    listContainer.innerHTML = productContent;
+  })
 
 </script>
 
@@ -185,8 +262,8 @@
 
     <slider-component class="slider-mobile-gutter{% if section.settings.full_width %} slider-component-full-width{% endif %}{% if show_mobile_slider == false %} page-width{% endif %}{% if show_desktop_slider == false and section.settings.full_width == false %} page-width-desktop{% endif %}{% if show_desktop_slider %} slider-component-desktop{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
       <ul
-        id="Slider-{{ section.id }}"
-        data-id="{{ section.id }}"
+        id="Slider-{{ section.id | replace: "__", "-"}}"
+        data-id="{{ section.id | replace: "__", "-" }}"
         class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--{{ section.settings.columns_desktop }}-col-desktop{% if section.settings.collection == blank %} grid--2-col-tablet-down{% else %} grid--{{ section.settings.columns_mobile }}-col-tablet-down{% endif %}{% if show_mobile_slider or show_desktop_slider %} slider{% if show_desktop_slider %} slider--desktop{% endif %}{% if show_mobile_slider %} slider--tablet grid--peek{% endif %}{% endif %}"
         role="list"
         aria-label="{{ 'general.slider.name' | t }}"
@@ -200,7 +277,7 @@
             class="slider-button slider-button--prev"
             name="previous"
             aria-label="{{ 'general.slider.previous_slide' | t }}"
-            aria-controls="Slider-{{ section.id }}"
+            aria-controls="Slider-{{ section.id | replace: "__", "-" }}"
           >
             <span class="svg-wrapper">
               {{- 'icon-caret.svg' | inline_asset_content -}}
@@ -217,7 +294,7 @@
             class="slider-button slider-button--next"
             name="next"
             aria-label="{{ 'general.slider.next_slide' | t }}"
-            aria-controls="Slider-{{ section.id }}"
+            aria-controls="Slider-{{ section.id | replace: "__", "-"}}"
           >
             <span class="svg-wrapper">
               {{- 'icon-caret.svg' | inline_asset_content -}}
