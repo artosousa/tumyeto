@@ -24,6 +24,30 @@
           "type": "title",
           "settings": {}
         },
+        "text_ccyUAm": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.wheel_size.value }}",
+            "page": "",
+            "text_style": "body"
+          }
+        },
+        "text_Fi7E64": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.durometer.value }} Durometer",
+            "page": "",
+            "text_style": "body"
+          }
+        },
+        "text_dHqfYW": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.wheel_shape.value }} Shape",
+            "page": "",
+            "text_style": "body"
+          }
+        },
         "price": {
           "type": "price",
           "settings": {}
@@ -115,30 +139,6 @@
             "page": "1049"
           }
         },
-        "text_ccyUAm": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.metafields.custom.wheel_size.value }}",
-            "page": "",
-            "text_style": "body"
-          }
-        },
-        "text_Fi7E64": {
-          "type": "text",
-          "settings": {
-            "text": "Durometer {{ product.metafields.custom.durometer.value }}",
-            "page": "",
-            "text_style": "body"
-          }
-        },
-        "text_dHqfYW": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.metafields.custom.wheel_shape.value }} Shape",
-            "page": "",
-            "text_style": "body"
-          }
-        },
         "popup_tPGYQx": {
           "type": "popup",
           "disabled": true,
@@ -151,6 +151,9 @@
       "block_order": [
         "vendor",
         "title",
+        "text_ccyUAm",
+        "text_Fi7E64",
+        "text_dHqfYW",
         "price",
         "description",
         "variant_picker",
@@ -163,9 +166,6 @@
         "collapsible-row-3",
         "share",
         "collapsible_tab_BwNNpJ",
-        "text_ccyUAm",
-        "text_Fi7E64",
-        "text_dHqfYW",
         "popup_tPGYQx"
       ],
       "settings": {
