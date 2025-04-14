@@ -23,10 +23,9 @@
       "blocks": {
         "heading_xthWPJ": {
           "type": "heading",
-          "disabled": true,
           "settings": {
             "heading": "{{ collection.title }}",
-            "heading_size": "h2"
+            "heading_size": "h0"
           }
         },
         "text_77h9Wr": {
