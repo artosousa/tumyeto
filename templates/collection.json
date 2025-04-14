@@ -25,7 +25,7 @@
           "type": "heading",
           "settings": {
             "heading": "{{ collection.title }}",
-            "heading_size": "h0"
+            "heading_size": "hxl"
           }
         },
         "text_77h9Wr": {
