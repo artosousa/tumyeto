@@ -115,18 +115,18 @@
             "page": "1049"
           }
         },
-        "text_Fi7E64": {
-          "type": "text",
-          "settings": {
-            "text": "Durometer {{ product.metafields.custom.durometer.value }}",
-            "page": "",
-            "text_style": "body"
-          }
-        },
         "text_ccyUAm": {
           "type": "text",
           "settings": {
             "text": "{{ product.metafields.custom.wheel_size.value }}",
+            "page": "",
+            "text_style": "body"
+          }
+        },
+        "text_Fi7E64": {
+          "type": "text",
+          "settings": {
+            "text": "Durometer {{ product.metafields.custom.durometer.value }}",
             "page": "",
             "text_style": "body"
           }
@@ -163,8 +163,8 @@
         "collapsible-row-3",
         "share",
         "collapsible_tab_BwNNpJ",
-        "text_Fi7E64",
         "text_ccyUAm",
+        "text_Fi7E64",
         "text_dHqfYW",
         "popup_tPGYQx"
       ],
