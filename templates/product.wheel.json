@@ -126,7 +126,7 @@
         "text_ccyUAm": {
           "type": "text",
           "settings": {
-            "text": "",
+            "text": "{{ product.metafields.custom.wheel_size.value }}",
             "page": "",
             "text_style": "body"
           }
