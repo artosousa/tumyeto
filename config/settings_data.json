@@ -9,8 +9,10 @@
  */
 {
   "current": {
+    "add_grip": "grip-single-sheet",
     "logo": "shopify://shop_images/tylogo_new512_b79436cc-3943-4d88-8f90-8d18104c0243.png",
     "logo_width": 110,
+    "favicon": "shopify://shop_images/ty_sq.png",
     "map_api": "pk.eyJ1IjoiYXJ0b3NvdXNhIiwiYSI6ImNtNjh1NTUwZTBiNnAydW9jdjAxbHIydjcifQ.Fb5TaMg184yJ0pJO5KDICA",
     "type_header_font": "assistant_n4",
     "heading_scale": 100,
@@ -119,7 +121,7 @@
     "predictive_search_show_vendor": false,
     "predictive_search_show_price": false,
     "currency_code_enabled": false,
-    "cart_type": "page",
+    "cart_type": "drawer",
     "show_vendor": true,
     "show_cart_note": true,
     "sections": {
