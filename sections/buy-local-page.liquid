@@ -99,7 +99,7 @@
                 if (data.features && data.features.length > 0) {
                     return data.features[0].geometry.coordinates;
                 } else {
-                    console.error('Geocoding failed for address:', shop.account_name );
+                    console.error('Geocoding failed for address:', shop.account_name + shop.street_address );
                     return null;
                 }
             } else {
