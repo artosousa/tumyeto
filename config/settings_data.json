@@ -213,6 +213,13 @@
       }
     },
     "content_for_index": [],
+    "blocks": {
+      "651962886394718550": {
+        "type": "shopify://apps/ea-accessibility/blocks/app-embed-block/e6e05997-8214-48e2-a583-70d003e3d5f1",
+        "disabled": false,
+        "settings": {}
+      }
+    },
     "color_schemes": {
       "background-1": {
         "settings": {
