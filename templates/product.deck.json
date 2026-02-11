@@ -16,6 +16,7 @@
           "type": "text",
           "settings": {
             "text": "{{ product.vendor }}",
+            "page": "",
             "text_style": "uppercase"
           }
         },
@@ -26,8 +27,17 @@
         "text_m9Q9jz": {
           "type": "text",
           "disabled": true,
+          "repeater": "{{ product.metafields.shopify[\"color-pattern\"].value }}",
+          "settings": {
+            "text": "{{ block.repeater.label.value }}"
+          }
+        },
+        "text_QqQEdB": {
+          "type": "text",
+          "disabled": true,
           "settings": {
             "text": "{{ product.metafields.custom.rider_name.value }}",
+            "page": "",
             "text_style": "subtitle"
           }
         },
@@ -36,6 +46,7 @@
           "disabled": true,
           "settings": {
             "text": "{{ product.metafields.custom.deck_name.value }}",
+            "page": "",
             "text_style": "body"
           }
         },
@@ -44,6 +55,7 @@
           "disabled": true,
           "settings": {
             "text": "{{ product.metafields.custom.deck_size.value }}",
+            "page": "",
             "text_style": "body"
           }
         },
@@ -52,24 +64,24 @@
           "disabled": true,
           "settings": {
             "text": "{{ product.metafields.custom.deck_concave.value }} Concave",
+            "page": "",
             "text_style": "body"
           }
         },
-        "collapsible_tab_iXmLnf": {
-          "type": "collapsible_tab",
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "text_YgMzTM": {
+          "type": "text",
           "settings": {
-            "heading": "Deck Dimensions",
-            "icon": "ruler",
-            "content": "",
-            "page": "{{ product.metafields.custom.deck_dimensions.value }}"
+            "text": "",
+            "page": "{{ product.metafields.custom.deck_dimensions.value }}",
+            "text_style": "body"
           }
         },
         "price": {
           "type": "price",
-          "settings": {}
-        },
-        "description": {
-          "type": "description",
           "settings": {}
         },
         "variant_picker": {
@@ -160,18 +172,12 @@
             "share_label": "Share"
           }
         },
-        "custom_liquid_dRH77E": {
-          "type": "custom_liquid",
-          "repeater": "{{ product.metafields.shopify.size.value }}",
-          "settings": {
-            "custom_liquid": ""
-          }
-        },
         "text_4H6Fqe": {
           "type": "text",
           "disabled": true,
           "settings": {
             "text": "{{ product.metafields.custom.deck_size.value }}Size",
+            "page": "",
             "text_style": "body"
           }
         }
@@ -180,12 +186,13 @@
         "vendor",
         "title",
         "text_m9Q9jz",
+        "text_QqQEdB",
         "text_kFi3MM",
         "text_ndBmXW",
         "text_XQAf9G",
-        "collapsible_tab_iXmLnf",
-        "price",
         "description",
+        "text_YgMzTM",
+        "price",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
@@ -197,22 +204,21 @@
         "collapsible-row-3",
         "collapsible_tab_BwNNpJ",
         "share",
-        "custom_liquid_dRH77E",
         "text_4H6Fqe"
       ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "",
-        "media_size": "medium",
+        "media_size": "small",
         "constrain_to_viewport": true,
         "media_fit": "contain",
-        "gallery_layout": "thumbnail",
+        "gallery_layout": "stacked",
         "media_position": "left",
-        "image_zoom": "lightbox",
-        "mobile_thumbnails": "hide",
+        "image_zoom": "none",
+        "mobile_thumbnails": "columns",
         "hide_variants": true,
         "enable_video_looping": false,
-        "padding_top": 36,
+        "padding_top": 12,
         "padding_bottom": 12
       }
     },
