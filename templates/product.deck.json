@@ -26,10 +26,11 @@
         },
         "text_m9Q9jz": {
           "type": "text",
-          "disabled": true,
           "repeater": "{{ product.metafields.shopify[\"color-pattern\"].value }}",
           "settings": {
-            "text": "{{ block.repeater.label.value }}"
+            "text": "{{ block.repeater.label.value }}",
+            "page": "",
+            "text_style": "body"
           }
         },
         "text_QqQEdB": {
